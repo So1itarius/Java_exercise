@@ -1,0 +1,96 @@
+CREATE TABLE Readers (
+    r_id SERIAL,
+    FIO varchar(100),
+    other_info varchar(100),
+    PRIMARY KEY (r_id)
+);
+
+CREATE TABLE Books (
+    b_id SERIAL,
+    book_name varchar(255),
+    quantity int,
+    PRIMARY KEY (emp_id)
+);
+
+CREATE TABLE Сonnection(
+    c_id SERIAL,
+    r_id integer,
+    b_id integer,
+    PRIMARY KEY (c_id)
+);
+
+INSERT INTO Books (book_name) VALUES
+('Час Быка'),
+('Большая книга рассказов'),
+('Судьба человека'),
+('Тихий Дон'),
+('Чук и Гек'),
+('Бобик в гостях у Барбоса'),
+('В окопах Сталинграда'),
+('Заводной апельсин'),
+('Туманность Андромеды'),
+('Незнайка в Солнечном городе')
+;
+
+INSERT INTO Readers (FIO) VALUES
+('Илья Вогон'),
+('Уася Гогенцолерн'),
+('Акакий Варфаломеевич'),
+('Питер Гриффин'),
+('Рональд Макдональд'),
+('Алексей Провальный'),
+('Найк Цукерберг'),
+('Огурец Грунтовый'),
+('Вор Портовый'),
+('Клоп Мотыльков'),
+('Педор Бондарчук'),
+('Пролапс Трубецкой'),
+('Снуп Дог'),
+('Лукашенко Младший'),
+('Ариец Эталонный'),
+('Змагар Хохлович')
+;
+
+INSERT INTO conn (r_id, b_id) VALUES
+(1,1),
+(1,4),
+(1,8),
+(1,9),
+(2,1),
+(3,1),
+(4,3),
+(4,10),
+(4,7),
+(5,2),
+(5,8),
+(6,3),
+(7,5),
+(8,3),
+(8,10),
+(9,4),
+(10,2),
+(11,8),
+(12,1),
+(13,8),
+(14,2),
+(14,7),
+(14,8)
+;
+
+--укажем уникальные ключи
+ALTER TABLE public.books ADD CONSTRAINT un_b_id_constraint UNIQUE (b_id);
+ALTER TABLE public.readers ADD CONSTRAINT un_r_id_constraint UNIQUE (r_id);
+ALTER TABLE public.conn ADD CONSTRAINT un_c_id_constraint UNIQUE (c_id);
+
+--повесим каскадные связи
+ALTER TABLE conn
+ADD CONSTRAINT r_id_fk_constraint
+FOREIGN KEY (r_id) REFERENCES readers (r_id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE conn
+ADD CONSTRAINT dep_id_fk_constraint
+FOREIGN KEY (b_id) REFERENCES books (b_id)
+ON UPDATE CASCADE ON DELETE CASCADE;
+
+SELECT book_name,fio FROM (books JOIN conn USING (b_id)) JOIN readers USING (r_id);
